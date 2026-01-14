@@ -1,5 +1,6 @@
 package com.cx.consultant.controller;
 
+import com.cx.consultant.aiservice.ConsultantService;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,14 +10,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     @Autowired
-    private OpenAiChatModel model;
+    private ConsultantService service;
 
     @RequestMapping("/chat")
     public String chat(String message) { // 浏览器传递的用户问题
-
-        String result = model.chat(message);
-        return result;
-
+        return service.chat(message);
     }
+
+
+//    // Spring整合LangChain4j
+//    @Autowired
+//    private OpenAiChatModel model;
+//
+//    @RequestMapping("/chat")
+//    public String chat(String message) { // 浏览器传递的用户问题
+//
+//        String result = model.chat(message);
+//        return result;
+//
+//    }
 
 }
