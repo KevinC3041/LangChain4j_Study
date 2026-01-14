@@ -14,8 +14,8 @@ public class ChatController {
     private ConsultantService service;
 
     @RequestMapping(value = "/chat", produces = "text/html;charset=UTF-8")
-    public Flux<String> chat(String message) { // 浏览器传递的用户问题
-        return service.chat(message);
+    public Flux<String> chat(String memoryId, String message) { // 浏览器传递的用户问题
+        return service.chat(memoryId, message);
     }
 
 

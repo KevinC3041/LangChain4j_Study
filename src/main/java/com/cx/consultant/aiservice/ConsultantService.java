@@ -1,6 +1,7 @@
 package com.cx.consultant.aiservice;
 
 
+import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
@@ -12,7 +13,8 @@ import reactor.core.publisher.Flux;
         wiringMode = AiServiceWiringMode.EXPLICIT, // 手动装配
         chatModel = "openAiChatModel", // 指定模型
         streamingChatModel = "openAiStreamingChatModel", // 指定流式模型
-        chatMemory = "chatMemory" //配置会话记忆对象
+//        chatMemory = "chatMemory", //配置会话记忆对象
+        chatMemoryProvider = "chatMemoryProvider" //配置会话记忆提供者对象
 )
 public interface ConsultantService {
 
@@ -21,7 +23,7 @@ public interface ConsultantService {
     @SystemMessage(fromResource = "System.txt")
 //    @UserMessage("你是明代心学大师王阳明，正在领兵平定宸濠之乱。{{it}}")
 //    @UserMessage("你是明代心学大师王阳明，正在领兵平定宸濠之乱。{{msg}}")
-    public Flux<String> chat(/*@V("msg")*/ String message);
+    public Flux<String> chat(@MemoryId String memoryId, @UserMessage /*@V("msg")*/ String message);
 
 
 //    // 用于聊天的方法 AiServices Utility Class(非流式)
