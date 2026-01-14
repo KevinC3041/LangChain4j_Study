@@ -6,7 +6,18 @@ langchain4j:
       model-name: qwen-plus
       log-requests: true
       log-responses: true
+    streaming-chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: ${API-KEY}
+      model-name: qwen-plus
+      log-requests: true
+      log-responses: true
 
 logging:
   level:
-    dev.wada.chain: DEBUG
+    dev.langchain4j: DEBUG
+
+reactor:
+  netty:
+    resolver:
+      use-native: false
