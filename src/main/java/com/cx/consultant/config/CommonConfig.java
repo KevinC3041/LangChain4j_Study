@@ -1,6 +1,8 @@
 package com.cx.consultant.config;
 
 import com.cx.consultant.aiservice.ConsultantService;
+import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.service.AiServices;
@@ -23,6 +25,12 @@ public class CommonConfig {
 //        return consultantService;
 //    }
 
-
-
+//    构建会话记忆对象
+    @Bean
+    public ChatMemory chatMemory(){
+        MessageWindowChatMemory memory = MessageWindowChatMemory.builder()
+                .maxMessages(20)
+                .build();
+        return memory;
+    }
 }
