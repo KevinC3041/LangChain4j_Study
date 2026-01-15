@@ -17,6 +17,12 @@ logging:
   level:
     dev.langchain4j: DEBUG
 
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 reactor:
   netty:
     resolver:

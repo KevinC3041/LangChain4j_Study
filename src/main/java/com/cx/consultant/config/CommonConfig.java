@@ -7,6 +7,7 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,9 @@ public class CommonConfig {
 
     @Autowired
     private OpenAiChatModel model;
+
+    @Autowired
+    private ChatMemoryStore redisChatMemoryStore;
 
 //    @Bean
 //    public ConsultantService consultantService(){
@@ -43,6 +47,7 @@ public class CommonConfig {
                 return MessageWindowChatMemory.builder()
                         .id(memoryId)
                         .maxMessages(20)
+                        .chatMemoryStore(redisChatMemoryStore)
                         .build();
             }
         };
