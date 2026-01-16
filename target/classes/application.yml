@@ -18,10 +18,29 @@ logging:
     dev.langchain4j: DEBUG
 
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/llmstudy
+    username: root
+    password: 12345678
+  #Redis相关配置
   data:
     redis:
       host: localhost
       port: 6379
+
+
+#spring:
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+#  datasource:
+#    druid:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://localhost:3306/chat_db?useSSL=false&serverTimezone=UTC
+#      username: root
+#      password: 12345678
 
 reactor:
   netty:

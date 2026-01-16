@@ -1,14 +1,12 @@
 package com.cx.consultant.config;
 
-import com.cx.consultant.aiservice.ConsultantService;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,7 +17,12 @@ public class CommonConfig {
     private OpenAiChatModel model;
 
     @Autowired
+    @Qualifier("redisChatMemoryStore")
     private ChatMemoryStore redisChatMemoryStore;
+
+    @Autowired
+    @Qualifier("mySQLChatMemoryStore")
+    private ChatMemoryStore mySQLChatMemoryStore;
 
 //    @Bean
 //    public ConsultantService consultantService(){
@@ -47,7 +50,8 @@ public class CommonConfig {
                 return MessageWindowChatMemory.builder()
                         .id(memoryId)
                         .maxMessages(20)
-                        .chatMemoryStore(redisChatMemoryStore)
+//                        .chatMemoryStore(redisChatMemoryStore)
+                        .chatMemoryStore(mySQLChatMemoryStore)
                         .build();
             }
         };
