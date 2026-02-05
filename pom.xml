@@ -25,6 +25,9 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 统一LangChain4j版本：仅在此处维护，后续所有LC4J依赖直接引用该属性，避免手动修改出错 -->
+<!--        <langchain4j.version>1.0.1-beta6</langchain4j.version>-->
+        <langchain4j.version>1.10.0-beta18</langchain4j.version>
     </properties>
 
     <repositories>
@@ -50,14 +53,16 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
-            <version>1.0.1-beta6</version>
+            <version>${langchain4j.version}</version>
+<!--            <version>1.0.1-beta6</version>-->
         </dependency>
 
         <!--        AiServices相关的依赖-->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-spring-boot-starter</artifactId>
-            <version>1.0.1-beta6</version>
+            <version>${langchain4j.version}</version>
+<!--            <version>1.0.1-beta6</version>-->
         </dependency>
 
 <!--                引入流式调用相关的依赖-->
@@ -74,7 +79,8 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-reactor</artifactId>
-            <version>1.0.1-beta6</version>
+            <version>${langchain4j.version}</version>
+<!--            <version>1.0.1-beta6</version>-->
         </dependency>
 <!--        redis依赖-->
         <dependency>
@@ -86,7 +92,8 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-easy-rag</artifactId>
-            <version>1.10.0-beta18</version>
+            <version>${langchain4j.version}</version>
+<!--            <version>1.10.0-beta18</version>-->
             <scope>compile</scope>
 
             <!--        把TIKA删除，防止依赖不兼容-->
@@ -102,7 +109,8 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-document-parser-apache-pdfbox</artifactId>
-            <version>1.10.0-beta18</version>
+            <version>${langchain4j.version}</version>
+<!--            <version>1.10.0-beta18</version>-->
             <scope>compile</scope>
         </dependency>
 
@@ -133,6 +141,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

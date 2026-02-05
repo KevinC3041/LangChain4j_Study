@@ -1,0 +1,14 @@
+{
+  "groups": [
+    {
+      "name": "embedding-model",
+      "type": "com.cx.consultant.config.EmbeddingModelProperties",
+      "sourceType": "com.cx.consultant.config.EmbeddingModelProperties"
+    }
+  ],
+  "properties": [],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}
