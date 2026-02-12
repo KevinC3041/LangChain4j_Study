@@ -40,6 +40,61 @@ public class RagIngestRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
+//        List<Document> documents = new ArrayList<>();
+//
+////        pdf
+//        documents.addAll(
+//                ClassPathDocumentLoader.loadDocuments(
+//                        "content/pdfs",
+//                        new ApachePdfBoxDocumentParser()
+//                )
+//        );
+//
+////        txt/md
+//        documents.addAll(
+//                ClassPathDocumentLoader.loadDocuments(
+//                        "content/texts",
+//                        new TextDocumentParser()
+//                )
+//        );
+
+//        构建文档分割器对象
+        DocumentSplitter ds = DocumentSplitters.recursive(500, 100);
+
+
+//        // 3.手动分批embedding（核心），控制 embedding 请求的批处理大小，因为国产api限制大小为10。实际可在yml中配置max-segments-per-batch
+//        List<TextSegment> segments = documents.stream()
+//                .flatMap(doc -> ds.split(doc).stream())
+//                .toList();
+//
+//        for (int i=0; i < segments.size(); i += BATCH_SIZE) {
+//            List<TextSegment> batch = segments.subList(
+//                    i,
+//                    Math.min(segments.size(), i + BATCH_SIZE)
+//            );
+//
+//            var embeddings = embeddingModel.embedAll(batch).content();
+//            embeddingStore.addAll(embeddings, batch);
+//        }
+//
+//        log.info("RAG ingest finished, total segments: " + segments.size());
+
+
+//      //  3.构建一个EmbeddingStoreIngestor对象
+        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
+                .embeddingStore(embeddingStore)
+                .embeddingModel(embeddingModel)
+                .documentSplitter(ds)
+                .build();
+
+        // 加载文档
+        List<Document> documents = loadDocuments();
+
+        ingestor.ingest(documents);
+        System.out.println("RAG ingest finished.");
+    }
+
+    private List<Document> loadDocuments() {
         List<Document> documents = new ArrayList<>();
 
 //        pdf
@@ -58,35 +113,6 @@ public class RagIngestRunner implements ApplicationRunner {
                 )
         );
 
-//        构建文档分割器对象
-        DocumentSplitter ds = DocumentSplitters.recursive(500, 100);
-
-        List<TextSegment> segments = documents.stream()
-                .flatMap(doc -> ds.split(doc).stream())
-                .toList();
-
-//        3.手动分批embedding（核心）
-        for (int i=0; i < segments.size(); i += BATCH_SIZE) {
-            List<TextSegment> batch = segments.subList(
-                    i,
-                    Math.min(segments.size(), i + BATCH_SIZE)
-            );
-
-            var embeddings = embeddingModel.embedAll(batch).content();
-            embeddingStore.addAll(embeddings, batch);
-        }
-
-        log.info("RAG ingest finished, total segments: " + segments.size());
-
-
-////        3.构建一个EmbeddingStoreIngestor对象
-//        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-//                .embeddingStore(embeddingStore)
-//                .embeddingModel(embeddingModel)
-//                .documentSplitter(ds)
-//                .build();
-//
-//        ingestor.ingest(documents);
-
+        return documents;
     }
 }
