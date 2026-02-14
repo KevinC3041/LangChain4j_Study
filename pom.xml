@@ -149,6 +149,20 @@
             <optional>true</optional>
         </dependency>
 
+<!--        引入langchain4j对于redis向量数据库的支持-->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-community-redis-spring-boot-starter</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>7.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,5 +1,6 @@
 package com.cx.consultant.config;
 
+import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.ClassPathDocumentLoader;
@@ -44,6 +45,9 @@ public class CommonConfig {
     @Autowired
     private EmbeddingModel embeddingModel;
 
+    @Autowired
+    private RedisEmbeddingStore redisEmbeddingStore;
+
 //    @Bean
 //    public ConsultantService consultantService(){
 //        ConsultantService consultantService = AiServices.builder(ConsultantService.class)
@@ -78,11 +82,11 @@ public class CommonConfig {
         return chatMemoryProvider;
     }
 
-////    构建向量数据库操作对象（拆出Ingest业务逻辑至RagIngestRunner）
-    @Bean("myEmbeddingStore")
-    public EmbeddingStore myEmbeddingStore(){// embeddingStore的对象，这个对象的名字不能和依赖自动注入的重复，所以这里要用myEmbeddingStore
-        return new InMemoryEmbeddingStore();
-    }
+////    构建向量数据库操作对象，操作的是内存版本的向量数据库（拆出Ingest业务逻辑至RagIngestRunner）
+//    @Bean("myEmbeddingStore")
+//    public EmbeddingStore myEmbeddingStore(){// embeddingStore的对象，这个对象的名字不能和依赖自动注入的重复，所以这里要用myEmbeddingStore
+//        return new InMemoryEmbeddingStore();
+//    }
 
 //    @Bean
 //    public EmbeddingStore myEmbeddingStore(){// embeddingStore的对象，这个对象的名字不能和依赖自动注入的重复，所以这里要用myEmbeddingStore
@@ -130,9 +134,10 @@ public class CommonConfig {
 
 //    构建向量数据库检索对象
     @Bean("contentRetriever")
-    public ContentRetriever contentRetriever(@Qualifier("myEmbeddingStore") EmbeddingStore store){
+    public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store*/){
         return EmbeddingStoreContentRetriever.builder()
-                .embeddingStore(store)
+//                .embeddingStore(store)
+                .embeddingStore(redisEmbeddingStore)
 //                .minScore(0.5)
                 .minScore(0.3)
                 .maxResults(3)

@@ -20,6 +20,12 @@ langchain4j:
       log-responses: true
       max-segments-per-batch: 10
 
+  community:
+    redis:
+      host: localhost
+      port: 6379
+      password: Kivin412012@
+
 logging:
   level:
     dev.langchain4j: DEBUG
