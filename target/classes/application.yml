@@ -25,6 +25,10 @@ langchain4j:
       host: localhost
       port: 6379
       password: Kivin412012@
+      index-name: cybergyangming
+      prefix: 'cybergyangming:'
+#      index-name: test1
+#      prefix: 'test1:'
 
 logging:
   level:
@@ -36,7 +40,7 @@ spring:
     url: jdbc:mysql://localhost:3306/llmstudy
     username: root
     password: 12345678
-  #Redis相关配置
+#  #Redis相关配置
   data:
     redis:
       host: localhost

@@ -1,5 +1,6 @@
 package com.cx.consultant.rag;
 
+import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
 import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 //@RequiredArgsConstructor
 public class RagIngestRunner implements ApplicationRunner {
 
@@ -31,12 +32,17 @@ public class RagIngestRunner implements ApplicationRunner {
     private final EmbeddingStore embeddingStore;
     private final EmbeddingModel embeddingModel;
 
+//    private final RedisEmbeddingStoreFactory storeFactory;
+
     public RagIngestRunner(
 //            @Qualifier("myEmbeddingStore") EmbeddingStore embeddingStore,
-            RedisEmbeddingStore redisEmbeddingStore,
+            /*@Qualifier("cybergYangMingStore")*/ RedisEmbeddingStore redisEmbeddingStore,
+//            RedisEmbeddingStoreFactory storeFactory,
             EmbeddingModel embeddingModel) {
 //        this.embeddingStore = embeddingStore;
         this.embeddingStore = redisEmbeddingStore;
+//        this.storeFactory = storeFactory;
+//        this.embeddingStore = storeFactory.create("cybergyangming");
         this.embeddingModel = embeddingModel;
     }
 
@@ -108,13 +114,13 @@ public class RagIngestRunner implements ApplicationRunner {
                 )
         );
 
-//        txt/md
-        documents.addAll(
-                ClassPathDocumentLoader.loadDocuments(
-                        "content/texts",
-                        new TextDocumentParser()
-                )
-        );
+////        txt/md
+//        documents.addAll(
+//                ClassPathDocumentLoader.loadDocuments(
+//                        "content/texts",
+//                        new TextDocumentParser()
+//                )
+//        );
 
         return documents;
     }

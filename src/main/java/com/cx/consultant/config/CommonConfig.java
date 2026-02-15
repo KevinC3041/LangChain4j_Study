@@ -1,5 +1,6 @@
 package com.cx.consultant.config;
 
+import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
 import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -45,8 +46,22 @@ public class CommonConfig {
     @Autowired
     private EmbeddingModel embeddingModel;
 
+//    @Autowired
+//    private RedisEmbeddingStoreFactory storeFactory;
+
     @Autowired
     private RedisEmbeddingStore redisEmbeddingStore;
+
+    // 手工构建redisEmbeddingStore，设置向量数据前缀
+//    @Bean
+//    @Qualifier("cybergYangMingStore")
+//    public RedisEmbeddingStore cybergYangMingRedisEmbeddingStore(){
+//        return RedisEmbeddingStore.builder()
+//                .indexName("cybergyangming")
+//                .build();
+//    }
+    // 使用对象工厂实现多态前缀indexName
+//    RedisEmbeddingStore redisEmbeddingStore = storeFactory.create("cybergyangming");
 
 //    @Bean
 //    public ConsultantService consultantService(){
@@ -134,7 +149,9 @@ public class CommonConfig {
 
 //    构建向量数据库检索对象
     @Bean("contentRetriever")
-    public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store*/){
+    public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store, */
+        /*@Qualifier("cybergYangMingStore")*/ RedisEmbeddingStore redisEmbeddingStore
+    ){
         return EmbeddingStoreContentRetriever.builder()
 //                .embeddingStore(store)
                 .embeddingStore(redisEmbeddingStore)

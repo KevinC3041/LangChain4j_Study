@@ -4,9 +4,30 @@
       "name": "embedding-model",
       "type": "com.cx.consultant.config.EmbeddingModelProperties",
       "sourceType": "com.cx.consultant.config.EmbeddingModelProperties"
+    },
+    {
+      "name": "langchain4j.community.redis",
+      "type": "com.cx.consultant.config.LangchainRedisProperties",
+      "sourceType": "com.cx.consultant.config.LangchainRedisProperties"
     }
   ],
-  "properties": [],
+  "properties": [
+    {
+      "name": "langchain4j.community.redis.host",
+      "type": "java.lang.String",
+      "sourceType": "com.cx.consultant.config.LangchainRedisProperties"
+    },
+    {
+      "name": "langchain4j.community.redis.password",
+      "type": "java.lang.String",
+      "sourceType": "com.cx.consultant.config.LangchainRedisProperties"
+    },
+    {
+      "name": "langchain4j.community.redis.port",
+      "type": "java.lang.Integer",
+      "sourceType": "com.cx.consultant.config.LangchainRedisProperties"
+    }
+  ],
   "hints": [],
   "ignored": {
     "properties": []
