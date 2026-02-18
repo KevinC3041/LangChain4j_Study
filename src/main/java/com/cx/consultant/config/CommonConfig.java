@@ -1,6 +1,6 @@
 package com.cx.consultant.config;
 
-import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
+//import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
 import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -49,8 +49,8 @@ public class CommonConfig {
 //    @Autowired
 //    private RedisEmbeddingStoreFactory storeFactory;
 
-    @Autowired
-    private RedisEmbeddingStore redisEmbeddingStore;
+//    @Autowired
+//    private RedisEmbeddingStore redisEmbeddingStore;
 
     // 手工构建redisEmbeddingStore，设置向量数据前缀
 //    @Bean
@@ -150,7 +150,7 @@ public class CommonConfig {
 //    构建向量数据库检索对象
     @Bean("contentRetriever")
     public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store, */
-        /*@Qualifier("cybergYangMingStore")*/ RedisEmbeddingStore redisEmbeddingStore
+        @Qualifier("yangmingStore") RedisEmbeddingStore redisEmbeddingStore
     ){
         return EmbeddingStoreContentRetriever.builder()
 //                .embeddingStore(store)
@@ -161,4 +161,18 @@ public class CommonConfig {
                 .embeddingModel(embeddingModel)
                 .build();
     }
+
+
+////    构建王阳明模式的数据库检索对象
+//    @Bean("yangmingRetriever")
+//    public ContentRetriever yangmingRetriever(
+//            @Qualifier("yangmingStore") RedisEmbeddingStore store
+//    ){
+//        return EmbeddingStoreContentRetriever.builder()
+//                .embeddingStore(store)
+//                .minScore(0.3)
+//                .maxResults(3)
+//                .embeddingModel(embeddingModel)
+//                .build();
+//    }
 }

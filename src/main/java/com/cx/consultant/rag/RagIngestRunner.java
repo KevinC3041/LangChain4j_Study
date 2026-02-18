@@ -1,6 +1,6 @@
 package com.cx.consultant.rag;
 
-import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
+//import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
 import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-//@Component
+@Component
 //@RequiredArgsConstructor
 public class RagIngestRunner implements ApplicationRunner {
 
@@ -36,7 +36,7 @@ public class RagIngestRunner implements ApplicationRunner {
 
     public RagIngestRunner(
 //            @Qualifier("myEmbeddingStore") EmbeddingStore embeddingStore,
-            /*@Qualifier("cybergYangMingStore")*/ RedisEmbeddingStore redisEmbeddingStore,
+            @Qualifier("yangmingStore") RedisEmbeddingStore redisEmbeddingStore,
 //            RedisEmbeddingStoreFactory storeFactory,
             EmbeddingModel embeddingModel) {
 //        this.embeddingStore = embeddingStore;

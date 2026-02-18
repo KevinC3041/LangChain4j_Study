@@ -1,11 +1,6 @@
 {
   "groups": [
     {
-      "name": "embedding-model",
-      "type": "com.cx.consultant.config.EmbeddingModelProperties",
-      "sourceType": "com.cx.consultant.config.EmbeddingModelProperties"
-    },
-    {
       "name": "langchain4j.community.redis",
       "type": "com.cx.consultant.config.LangchainRedisProperties",
       "sourceType": "com.cx.consultant.config.LangchainRedisProperties"
