@@ -47,6 +47,9 @@ spring:
       port: 6379
       password: Kivin412012@
 
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
 
 #spring:
 #  data:

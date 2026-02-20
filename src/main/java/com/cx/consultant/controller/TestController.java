@@ -1,5 +1,7 @@
 package com.cx.consultant.controller;
 
+import com.cx.consultant.service.GameFlowService;
+import com.cx.consultant.service.impl.GameFlowServiceImpl;
 import entity.RedisTestEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,15 @@ public class TestController {
 
     @Autowired
     private StringRedisTemplate template;
+
+    @Autowired
+    private GameFlowServiceImpl gameFlowService;
+
+    @RequestMapping(value = "/caseGenerate", produces = "text/html;charset=UTF-8")
+    public Flux<String> caseGenerate(String memoryId) { // 浏览器传递的用户问题
+        return gameFlowService.startGame(memoryId);
+    }
+
 
     @GetMapping("/getRedisValByKey")
     public String getRedisString(String key) {

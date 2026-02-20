@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+//@Component
 //@RequiredArgsConstructor
 public class RagIngestRunner implements ApplicationRunner {
 
