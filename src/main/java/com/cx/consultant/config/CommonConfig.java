@@ -147,32 +147,19 @@ public class CommonConfig {
 //        return store;
 //    }
 
-//    构建向量数据库检索对象
-    @Bean("contentRetriever")
-    public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store, */
-        @Qualifier("yangmingStore") RedisEmbeddingStore redisEmbeddingStore
-    ){
-        return EmbeddingStoreContentRetriever.builder()
-//                .embeddingStore(store)
-                .embeddingStore(redisEmbeddingStore)
-//                .minScore(0.5)
-                .minScore(0.3)
-                .maxResults(3)
-                .embeddingModel(embeddingModel)
-                .build();
-    }
-
-
-////    构建王阳明模式的数据库检索对象
-//    @Bean("yangmingRetriever")
-//    public ContentRetriever yangmingRetriever(
-//            @Qualifier("yangmingStore") RedisEmbeddingStore store
+////    构建向量数据库检索对象,2.20移除至RetrieverConfig
+//    @Bean("contentRetriever")
+//    public ContentRetriever contentRetriever(/*@Qualifier("myEmbeddingStore") EmbeddingStore store, */
+//        @Qualifier("yangmingStore") RedisEmbeddingStore redisEmbeddingStore
 //    ){
 //        return EmbeddingStoreContentRetriever.builder()
-//                .embeddingStore(store)
+////                .embeddingStore(store)
+//                .embeddingStore(redisEmbeddingStore)
+////                .minScore(0.5)
 //                .minScore(0.3)
 //                .maxResults(3)
 //                .embeddingModel(embeddingModel)
 //                .build();
 //    }
+
 }

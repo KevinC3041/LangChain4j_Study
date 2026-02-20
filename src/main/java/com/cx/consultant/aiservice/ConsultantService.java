@@ -15,7 +15,8 @@ import reactor.core.publisher.Flux;
         streamingChatModel = "openAiStreamingChatModel", // 指定流式模型
 //        chatMemory = "chatMemory", //配置会话记忆对象
         chatMemoryProvider = "chatMemoryProvider", //配置会话记忆提供者对象
-        contentRetriever = "contentRetriever"// 配置向量数据库检索对象
+//        contentRetriever = "contentRetriever"// 配置向量数据库检索对象, 2.20注释，使用yangmingRetriever
+        contentRetriever = "yangmingRetriever"
 )
 public interface ConsultantService {
 
