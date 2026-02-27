@@ -3,28 +3,26 @@ package entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CasesEntity {
+@TableName("case_session")
+public class CaseSessionEntity {
 
     @TableId(type = IdType.AUTO)
+    private Long caseSessionId;
+    @TableField("user_id")
+    private String userId;
+    @TableField("case_id")
     private Long caseId;
-    @TableField("title")
-    private String title;
-    @TableField("summary")
-    private String summary;
-    @TableField("category")
-    private String category;
+    @TableField("scenario_content")
+    private String scenarioContent;
+    @TableField("total_score")
+    private Integer totalScore;
     @TableField("created_at")
     private LocalDateTime createdAt;
-    @TableField("updated_at")
-    private LocalDateTime updatedAt;
 
 }

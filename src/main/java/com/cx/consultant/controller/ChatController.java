@@ -1,5 +1,4 @@
 package com.cx.consultant.controller;
-
 import com.cx.consultant.aiservice.ConsultantService;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,4 +7,6 @@ public interface CasesService extends IService<CasesEntity> {
 
     public CasesEntity randomSelectOne();
 
+    public CasesEntity getCaseById(int id);
+
 }

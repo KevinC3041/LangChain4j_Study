@@ -14,9 +14,11 @@ public class CasesServiceImpl extends ServiceImpl<CasesMapper, CasesEntity> impl
     private CasesMapper casesMapper;
 
     public CasesEntity randomSelectOne() {
-
         return casesMapper.randomSelectOne();
+    }
 
+    public CasesEntity getCaseById(int id) {
+        return casesMapper.testChosenOne(id);
     }
 
 

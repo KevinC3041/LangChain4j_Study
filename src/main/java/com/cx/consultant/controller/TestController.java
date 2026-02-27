@@ -1,5 +1,6 @@
 package com.cx.consultant.controller;
 
+import com.cx.consultant.dto.CaseSceneGenerateResult;
 import com.cx.consultant.service.GameFlowService;
 import com.cx.consultant.service.impl.GameFlowServiceImpl;
 import entity.RedisTestEntity;
@@ -9,9 +10,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,11 +30,34 @@ public class TestController {
     @Autowired
     private GameFlowServiceImpl gameFlowService;
 
-    @RequestMapping(value = "/caseGenerate", produces = "text/html;charset=UTF-8")
-    public Flux<String> caseGenerate(String memoryId) { // 浏览器传递的用户问题
-        return gameFlowService.startGame(memoryId);
-    }
+//    @RequestMapping(value = "/caseGenerate", produces = "text/html;charset=UTF-8")
+//    public Flux<String> caseGenerate(String memoryId) { // 浏览器传递的用户问题
+//        return gameFlowService.startGame(memoryId);
+//    }
 
+//    @RequestMapping(value = "/getCaseById", produces = "text/html;charset=UTF-8")
+//    public Flux<String> getCaseById(String memoryId, int id) { // 浏览器传递的用户问题
+//        return gameFlowService.getCaseById(memoryId, id);
+//    }
+
+//   // Test1
+//    @RequestMapping(value = "/getCaseById", produces = "text/html;charset=UTF-8")
+//    public CaseSceneGenerateResult getCaseById(String memoryId, int id) { // 浏览器传递的用户问题
+//        return gameFlowService.getCaseById(memoryId, id);
+//    }
+
+//   // Test2
+    @GetMapping(value = "/getCaseById", produces = "text/html;charset=UTF-8")
+    public Flux<String> getCaseById(String memoryId, int id) { // 浏览器传递的用户问题
+
+        CaseSceneGenerateResult caseScene = gameFlowService.getCaseById(memoryId, id);
+        String resultStr = String.format("%s%s%s", caseScene.getScenario(), caseScene.getQuestions().get(0).getContent(), caseScene.getQuestions().get(1).getContent());
+
+        String[] chars = resultStr.split("");
+        return Flux
+                .fromArray(chars)
+                .delayElements(Duration.ofMillis(15));
+    }
 
     @GetMapping("/getRedisValByKey")
     public String getRedisString(String key) {

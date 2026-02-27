@@ -11,4 +11,7 @@ public interface CasesMapper extends BaseMapper<CasesEntity> {
     @Select("SELECT * FROM cases ORDER BY RAND() LIMIT 1")
     CasesEntity randomSelectOne();
 
+    @Select("SELECT * FROM cases WHERE CASE_ID = #{id}")
+    CasesEntity testChosenOne(int id);
+
 }
