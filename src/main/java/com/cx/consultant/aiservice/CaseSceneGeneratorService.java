@@ -1,6 +1,7 @@
 package com.cx.consultant.aiservice;
 
 
+import com.cx.consultant.dto.AiCaseSceneResult;
 import com.cx.consultant.dto.CaseSceneGenerateResult;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
@@ -21,7 +22,7 @@ public interface CaseSceneGeneratorService {
 //    Flux<String> chat(@MemoryId String memoryId, @UserMessage String message);
 
     @SystemMessage(fromResource = "case-system.txt")
-    CaseSceneGenerateResult generate(@MemoryId String memoryId, @UserMessage String message);
+    AiCaseSceneResult generate(@MemoryId String memoryId, @UserMessage String message);
 
 
 }

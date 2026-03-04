@@ -20,6 +20,8 @@ public class CaseSessionEntity {
     private Long caseId;
     @TableField("scenario_content")
     private String scenarioContent;
+    @TableField("scenario_content_plain")
+    private String scenarioContentPlain;
     @TableField("total_score")
     private Integer totalScore;
     @TableField("created_at")

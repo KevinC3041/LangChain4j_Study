@@ -1,5 +1,6 @@
 package com.cx.consultant.aiservice;
 
+import com.cx.consultant.dto.EvaluationResult;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
@@ -16,7 +17,7 @@ import reactor.core.publisher.Flux;
 )
 public interface EvaluationService {
 
-    @SystemMessage(fromResource = "case-evaluation.txt")
-    Flux<String> chat(@MemoryId String memoryId, @UserMessage String message);
+    @SystemMessage(fromResource = "evaluation-system.txt")
+    EvaluationResult evaluate(@MemoryId String memoryId, @UserMessage String message);
 
 }

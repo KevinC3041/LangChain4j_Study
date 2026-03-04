@@ -1,6 +1,8 @@
 package com.cx.consultant.controller;
 
+import com.cx.consultant.dto.AiCaseSceneResult;
 import com.cx.consultant.dto.CaseSceneGenerateResult;
+import com.cx.consultant.dto.EvaluationResult;
 import com.cx.consultant.service.GameFlowService;
 import com.cx.consultant.service.impl.GameFlowServiceImpl;
 import entity.RedisTestEntity;
@@ -50,14 +52,52 @@ public class TestController {
     @GetMapping(value = "/getCaseById", produces = "text/html;charset=UTF-8")
     public Flux<String> getCaseById(String memoryId, int id) { // 浏览器传递的用户问题
 
-        CaseSceneGenerateResult caseScene = gameFlowService.getCaseById(memoryId, id);
-        String resultStr = String.format("%s%s%s", caseScene.getScenario(), caseScene.getQuestions().get(0).getContent(), caseScene.getQuestions().get(1).getContent());
+        CaseSceneGenerateResult caseScene = gameFlowService.startGame(memoryId, id);
+        String resultStr = String.format("governance question:<br>%s<br>philosophy question:<br>%s<br>scenario:<br>%s<br>scenarioPlain:<br>%s<br>governancePlain:<br>%s<br>philosophyPlain:<br>%s<br>", caseScene.getQuestions().get(0).getContent(), caseScene.getQuestions().get(1).getContent(), caseScene.getScenario(), caseScene.getScenarioPlain(), caseScene.getQuestions().get(0).getContentPlain(), caseScene.getQuestions().get(1).getContentPlain());
 
         String[] chars = resultStr.split("");
         return Flux
                 .fromArray(chars)
                 .delayElements(Duration.ofMillis(15));
     }
+
+
+
+    @GetMapping(value = "/evaluateAnswer", produces = "text/html;charset=UTF-8")
+    public Flux<String> evaluateAnswer(String memoryId, String message) { // 浏览器传递的用户问题
+        EvaluationResult evaluationResult = gameFlowService.evaluateAnswer(memoryId, message);
+        String governanceSubEvaluation = "";
+        String philosophySubEvaluation = "";
+        for (int i = 0; i < evaluationResult.getQuestionEvaluations().size(); i++) {
+            EvaluationResult.QuestionEvaluation questionEvaluation = evaluationResult.getQuestionEvaluations().get(i);
+            if (questionEvaluation.getType().equals("governance")) {
+                governanceSubEvaluation = questionEvaluation.getEvaluation();
+            } else if (questionEvaluation.getType().equals("philosophy")) {
+                philosophySubEvaluation = questionEvaluation.getEvaluation();
+            }
+        }
+
+//        String resultStr = String.format("%s%s%s", evaluationResult.getOverallEvaluation(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy());
+        String resultStr = String.format("governance点评:<br>%s<br>\nphilosophy点评:<br>%s<br>\noverallEvaluation:<br>%s<br>governance guidance:<br>%s<br>philosophy guidance:<br>%s<br>overallEvaluation白话:<br>%s<br>governance解惑白话:<br>%s<br>philosophy解惑白话:<br>%s", governanceSubEvaluation, philosophySubEvaluation, evaluationResult.getOverallEvaluation(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy(), evaluationResult.getOverallEvaluationPlain(), evaluationResult.getGuidance().getGovernancePlain(), evaluationResult.getGuidance().getPhilosophyPlain());
+
+        String[] chars = resultStr.split("");
+        return Flux
+                .fromArray(chars)
+                .delayElements(Duration.ofMillis(15));
+    }
+
+    @GetMapping(value = "/reset", produces = "text/html;charset=UTF-8")
+    public String reset(String memoryId) {
+        gameFlowService.reset(memoryId);
+        return "已重置";
+    }
+
+    @GetMapping(value = "/quit", produces = "text/html;charset=UTF-8")
+    public String quit(String memoryId) {
+        gameFlowService.quit(memoryId);
+        return "已放弃";
+    }
+
 
     @GetMapping("/getRedisValByKey")
     public String getRedisString(String key) {
