@@ -24,4 +24,6 @@ public interface GameFlowService {
 
     public void reset(String memoryId);
 
+    public EvaluationResult getLastEvaluationResult(String memoryId);
+
 }

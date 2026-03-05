@@ -22,6 +22,10 @@ public class CaseSessionEntity {
     private String scenarioContent;
     @TableField("scenario_content_plain")
     private String scenarioContentPlain;
+    @TableField("personality_diagnosis")
+    private String personalityDiagnosis;
+    @TableField("personality_diagnosis_plain")
+    private String personalityDiagnosisPlain;
     @TableField("total_score")
     private Integer totalScore;
     @TableField("created_at")

@@ -18,12 +18,20 @@ public class CaseQaEntity {
     private Long caseSessionId;
     @TableField("question")
     private String question;
+    @TableField("question_plain")
+    private String questionPlain;
     @TableField("question_type")
     private String questionType;
     @TableField("answer")
     private String answer;
+    @TableField("guidance")
+    private String guidance;
+    @TableField("guidance_plain")
+    private String guidancePlain;
     @TableField("evaluation")
     private String evaluation;
+    @TableField("evaluation_plain")
+    private String evaluationPlain;
     @TableField("sub_score")
     private Integer subScore;
     @TableField("created_at")

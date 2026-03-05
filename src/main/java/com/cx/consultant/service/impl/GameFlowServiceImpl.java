@@ -144,6 +144,7 @@ public class GameFlowServiceImpl implements GameFlowService {
                 QuestionDTO question = new QuestionDTO();
                 question.setType(caseQas.get(i).getQuestionType());
                 question.setContent(caseQas.get(i).getQuestion());
+                question.setContentPlain(caseQas.get(i).getQuestionPlain());
                 questions.add(question);
             }
             caseSceneGenerateResult = new CaseSceneGenerateResult(
@@ -176,7 +177,7 @@ public class GameFlowServiceImpl implements GameFlowService {
 
 //        log.info("caseSummary:\n{}", caseSummary);
 
-        AiCaseSceneResult aiCaseScene = caseAgent.generate(memoryId, caseSummary);
+        AiCaseSceneResult aiCaseScene = caseAgent.generate(/*memoryId, */caseSummary);
 
 //        log.info("caseScene:\n{}", caseScene.toString());
 //        log.info("question1:\n{}", caseScene.getQuestions().get(0).getContent());
@@ -209,6 +210,7 @@ public class GameFlowServiceImpl implements GameFlowService {
             CaseQaEntity caseQa = new CaseQaEntity();
             caseQa.setCaseSessionId(caseSessionId);
             caseQa.setQuestion(caseScene.getQuestions().get(i).getContent());
+            caseQa.setQuestionPlain(caseScene.getQuestions().get(i).getContentPlain());
             caseQa.setQuestionType(caseScene.getQuestions().get(i).getType());
 
             caseQas.add(caseQa);
@@ -254,6 +256,7 @@ public class GameFlowServiceImpl implements GameFlowService {
         for (CaseQaEntity caseQa : caseQas) {
             QuestionDTO question = new QuestionDTO();
             question.setContent(caseQa.getQuestion());
+            question.setContentPlain(caseQa.getQuestionPlain());
             question.setType(caseQa.getQuestionType());
             questions.add(question);
         }
@@ -264,6 +267,7 @@ public class GameFlowServiceImpl implements GameFlowService {
 
             ObjectMapper mapper = new ObjectMapper();
             String jsonInput = mapper.writeValueAsString(evaluationContext);
+//            log.info("jsonInput:\n{}", jsonInput);
 
 //            String finalPrompt = """
 //你将收到一段 JSON 数据，包含：
@@ -280,9 +284,9 @@ public class GameFlowServiceImpl implements GameFlowService {
 
 //            log.info("finalPrompt:\n{}", finalPrompt);
 
-            log.info("jsonInput:\n{}", jsonInput);
 
-            evaluationResult = evaluationAgent.evaluate(memoryId, jsonInput);
+
+            evaluationResult = evaluationAgent.evaluate(/*memoryId, */jsonInput);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -298,36 +302,55 @@ public class GameFlowServiceImpl implements GameFlowService {
     private void afterEvaluation(EvaluationResult evaluationResult, CaseSessionEntity caseSession, List<CaseQaEntity> caseQas, CaseProgressEntity caseProgress) {
 
 //        Update CASE_SESSION
-        String governanceSubEvaluation = "";
+        String governanceEvaluation = "";
+        String governanceGuidance = "";
+        String governanceGuidancePlain = "";
         Integer governanceScore = null;
-        String philosophySubEvaluation = "";
+        String philosophyEvaluation = "";
+        String philosophyGuidance = "";
+        String philosophyGuidancePlain = "";
         Integer philosophyScore = null;
         String governanceAnswer = evaluationResult.getSplitAnswers().getGovernance();
         String philosophyAnswer = evaluationResult.getSplitAnswers().getPhilosophy();
-
         for (int i = 0; i < evaluationResult.getQuestionEvaluations().size(); i++) {
             EvaluationResult.QuestionEvaluation questionEvaluation = evaluationResult.getQuestionEvaluations().get(i);
+            EvaluationResult.Guidance guidance = evaluationResult.getGuidance();
             if (questionEvaluation.getType().equals("governance")) {
-                governanceSubEvaluation = questionEvaluation.getEvaluation();
+                governanceEvaluation = questionEvaluation.getEvaluation();
+                governanceGuidance = guidance.getGovernance();
+                governanceGuidancePlain = guidance.getGovernancePlain();
                 governanceScore = questionEvaluation.getScore();
             } else if (questionEvaluation.getType().equals("philosophy")) {
-                philosophySubEvaluation = questionEvaluation.getEvaluation();
+                philosophyEvaluation = questionEvaluation.getEvaluation();
+                philosophyGuidance = guidance.getPhilosophy();
+                philosophyGuidancePlain = guidance.getPhilosophyPlain();
                 philosophyScore = questionEvaluation.getScore();
             }
         }
-        int totalScore = evaluationResult.getTotalScore();
 
+        int totalScore = evaluationResult.getTotalScore();
         caseSession.setTotalScore(totalScore);
+
+        String personalityDiagnosis = evaluationResult.getPersonalityDiagnosis();
+        caseSession.setPersonalityDiagnosis(personalityDiagnosis);
+
+        String personalityDiagnosisPlain = evaluationResult.getPersonalityDiagnosisPlain();
+        caseSession.setPersonalityDiagnosisPlain(personalityDiagnosisPlain);
+
         caseSessionService.updateById(caseSession);
 
 //        Update CASE_QA
         for (CaseQaEntity caseQa : caseQas) {
             if (caseQa.getQuestionType().equals("governance")) {
-                caseQa.setEvaluation(governanceSubEvaluation);
+                caseQa.setEvaluation(governanceEvaluation);
+                caseQa.setGuidance(governanceGuidance);
+                caseQa.setGuidancePlain(governanceGuidancePlain);
                 caseQa.setSubScore(governanceScore);
                 caseQa.setAnswer(governanceAnswer);
             } else if (caseQa.getQuestionType().equals("philosophy")) {
-                caseQa.setEvaluation(philosophySubEvaluation);
+                caseQa.setEvaluation(philosophyEvaluation);
+                caseQa.setGuidance(philosophyGuidance);
+                caseQa.setGuidancePlain(philosophyGuidancePlain);
                 caseQa.setSubScore(philosophyScore);
                 caseQa.setAnswer(philosophyAnswer);
             }
@@ -356,6 +379,53 @@ public class GameFlowServiceImpl implements GameFlowService {
         CaseProgressEntity caseProgress = getUserProgressByPhilosopher(memoryId, "王阳明");
         caseProgress.setStage("WAITING_ANSWER");
         caseProgressService.updateById(caseProgress);
+
+    }
+
+
+    public EvaluationResult getLastEvaluationResult(String memoryId) {
+
+        CaseProgressEntity caseProgress = getUserProgressByPhilosopher(memoryId, "王阳明");
+        Long lastCompletedSessionId = caseProgress.getLastCompletedSessionId();
+        if (lastCompletedSessionId == null) {return new EvaluationResult();}
+
+        CaseSessionEntity caseSession = caseSessionService.getById(lastCompletedSessionId);
+        List<CaseQaEntity> caseQas = caseQaService.list(new QueryWrapper<CaseQaEntity>().eq("case_session_id", lastCompletedSessionId));
+
+        EvaluationResult evaluationResult = new EvaluationResult();
+        evaluationResult.setPersonalityDiagnosis(caseSession.getPersonalityDiagnosis());
+        evaluationResult.setPersonalityDiagnosisPlain(caseSession.getPersonalityDiagnosisPlain());
+        evaluationResult.setTotalScore(caseSession.getTotalScore());
+
+        EvaluationResult.SplitAnswers splitAnswers = new EvaluationResult.SplitAnswers();
+        List<EvaluationResult.QuestionEvaluation> questionEvaluations = new ArrayList<>();
+        EvaluationResult.Guidance guidance = new EvaluationResult.Guidance();
+
+        for (CaseQaEntity caseQa : caseQas) {
+
+            EvaluationResult.QuestionEvaluation questionEvaluation = new EvaluationResult.QuestionEvaluation();
+            String questionType = caseQa.getQuestionType();
+            questionEvaluation.setType(questionType);
+            questionEvaluation.setScore(caseQa.getSubScore());
+            questionEvaluation.setEvaluation(caseQa.getEvaluation());
+            questionEvaluations.add(questionEvaluation);
+            
+            if (questionType.equals("governance")) { 
+                splitAnswers.setGovernance(caseQa.getAnswer());
+                guidance.setGovernance(caseQa.getGuidance());
+                guidance.setGovernancePlain(caseQa.getGuidancePlain());
+            } else if (questionType.equals("philosophy")) {
+                splitAnswers.setPhilosophy(caseQa.getAnswer());
+                guidance.setPhilosophy(caseQa.getGuidance());
+                guidance.setPhilosophyPlain(caseQa.getGuidancePlain());
+            }
+        }
+
+        evaluationResult.setSplitAnswers(splitAnswers);
+        evaluationResult.setGuidance(guidance);
+        evaluationResult.setQuestionEvaluations(questionEvaluations);
+
+        return evaluationResult;
 
     }
 

@@ -10,8 +10,8 @@ public class EvaluationResult {
     private SplitAnswers splitAnswers;
     private List<QuestionEvaluation> questionEvaluations;
     private Integer totalScore;
-    private String overallEvaluation;
-    private String overallEvaluationPlain;
+    private String personalityDiagnosis;
+    private String personalityDiagnosisPlain;
     private Guidance guidance;
 
     @Data

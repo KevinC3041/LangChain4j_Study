@@ -21,7 +21,7 @@ public class RetrieverConfig {
                 .embeddingStore(redisEmbeddingStore)
 //                .minScore(0.5)
                 .minScore(0.3)
-                .maxResults(3)
+                .maxResults(2)
                 .embeddingModel(embeddingModel)
                 .build();
     }
@@ -34,7 +34,7 @@ public class RetrieverConfig {
         return EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(redisEmbeddingStore)
                 .minScore(0.3)
-                .maxResults(3)
+                .maxResults(2)
                 .embeddingModel(embeddingModel)
                 .build();
     }

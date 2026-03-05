@@ -12,9 +12,9 @@ import reactor.core.publisher.Flux;
 
 @AiService(
         wiringMode = AiServiceWiringMode.EXPLICIT, // 手动装配
-        chatModel = "openAiChatModel", // 指定模型
+        chatModel = "openAiChatModel" // 指定模型
 //        streamingChatModel = "openAiStreamingChatModel", // 指定流式模型
-        chatMemoryProvider = "chatMemoryProvider" //配置会话记忆提供者对象
+//        chatMemoryProvider = "chatMemoryProvider" //配置会话记忆提供者对象
 )
 public interface CaseSceneGeneratorService {
 
@@ -22,7 +22,7 @@ public interface CaseSceneGeneratorService {
 //    Flux<String> chat(@MemoryId String memoryId, @UserMessage String message);
 
     @SystemMessage(fromResource = "case-system.txt")
-    AiCaseSceneResult generate(@MemoryId String memoryId, @UserMessage String message);
+    AiCaseSceneResult generate(/*@MemoryId String memoryId, */@UserMessage String message);
 
 
 }

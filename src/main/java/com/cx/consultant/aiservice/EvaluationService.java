@@ -12,12 +12,12 @@ import reactor.core.publisher.Flux;
         wiringMode = AiServiceWiringMode.EXPLICIT, // 手动装配
         chatModel = "openAiChatModel", // 指定模型
         streamingChatModel = "openAiStreamingChatModel", // 指定流式模型
-        chatMemoryProvider = "chatMemoryProvider", //配置会话记忆提供者对象
+//        chatMemoryProvider = "chatMemoryProvider", //配置会话记忆提供者对象
         contentRetriever = "yangmingRetriever"
 )
 public interface EvaluationService {
 
     @SystemMessage(fromResource = "evaluation-system.txt")
-    EvaluationResult evaluate(@MemoryId String memoryId, @UserMessage String message);
+    EvaluationResult evaluate(/*@MemoryId String memoryId, */@UserMessage String message);
 
 }

@@ -53,7 +53,7 @@ public class TestController {
     public Flux<String> getCaseById(String memoryId, int id) { // 浏览器传递的用户问题
 
         CaseSceneGenerateResult caseScene = gameFlowService.startGame(memoryId, id);
-        String resultStr = String.format("governance question:<br>%s<br>philosophy question:<br>%s<br>scenario:<br>%s<br>scenarioPlain:<br>%s<br>governancePlain:<br>%s<br>philosophyPlain:<br>%s<br>", caseScene.getQuestions().get(0).getContent(), caseScene.getQuestions().get(1).getContent(), caseScene.getScenario(), caseScene.getScenarioPlain(), caseScene.getQuestions().get(0).getContentPlain(), caseScene.getQuestions().get(1).getContentPlain());
+        String resultStr = String.format("scenario:<br>%s<br>governance question:<br>%s<br>philosophy question:<br>%s<br>scenarioPlain:<br>%s<br>governancePlain:<br>%s<br>philosophyPlain:<br>%s<br>", caseScene.getScenario(), caseScene.getQuestions().get(0).getContent(), caseScene.getQuestions().get(1).getContent(), caseScene.getScenarioPlain(), caseScene.getQuestions().get(0).getContentPlain(), caseScene.getQuestions().get(1).getContentPlain());
 
         String[] chars = resultStr.split("");
         return Flux
@@ -66,19 +66,19 @@ public class TestController {
     @GetMapping(value = "/evaluateAnswer", produces = "text/html;charset=UTF-8")
     public Flux<String> evaluateAnswer(String memoryId, String message) { // 浏览器传递的用户问题
         EvaluationResult evaluationResult = gameFlowService.evaluateAnswer(memoryId, message);
-        String governanceSubEvaluation = "";
-        String philosophySubEvaluation = "";
+        String governanceEvaluation = "";
+        String philosophyEvaluation = "";
         for (int i = 0; i < evaluationResult.getQuestionEvaluations().size(); i++) {
             EvaluationResult.QuestionEvaluation questionEvaluation = evaluationResult.getQuestionEvaluations().get(i);
             if (questionEvaluation.getType().equals("governance")) {
-                governanceSubEvaluation = questionEvaluation.getEvaluation();
+                governanceEvaluation = questionEvaluation.getEvaluation();
             } else if (questionEvaluation.getType().equals("philosophy")) {
-                philosophySubEvaluation = questionEvaluation.getEvaluation();
+                philosophyEvaluation = questionEvaluation.getEvaluation();
             }
         }
 
-//        String resultStr = String.format("%s%s%s", evaluationResult.getOverallEvaluation(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy());
-        String resultStr = String.format("governance点评:<br>%s<br>\nphilosophy点评:<br>%s<br>\noverallEvaluation:<br>%s<br>governance guidance:<br>%s<br>philosophy guidance:<br>%s<br>overallEvaluation白话:<br>%s<br>governance解惑白话:<br>%s<br>philosophy解惑白话:<br>%s", governanceSubEvaluation, philosophySubEvaluation, evaluationResult.getOverallEvaluation(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy(), evaluationResult.getOverallEvaluationPlain(), evaluationResult.getGuidance().getGovernancePlain(), evaluationResult.getGuidance().getPhilosophyPlain());
+//        String resultStr = String.format("%s%s%s", evaluationResult.getpersonalityDiagnosis(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy());
+        String resultStr = String.format("governanceEvaluation（用户回答点评）:<br>%s<br>\nphilosophyEvaluation（用户回答点评）:<br>%s<br>\npersonalityDiagnosis（心性诊断）:<br>%s<br>governanceGuidance（哲人回答）:<br>%s<br>philosophyGuidance（哲人回答）:<br>%s<br>personalityDiagnosis（心性诊断白话）:<br>%s<br>governanceGuidancePlain（哲人回答白话）:<br>%s<br>philosophyGuidancePlain（哲人回答白话）:<br>%s", governanceEvaluation, philosophyEvaluation, evaluationResult.getPersonalityDiagnosis(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy(), evaluationResult.getPersonalityDiagnosisPlain(), evaluationResult.getGuidance().getGovernancePlain(), evaluationResult.getGuidance().getPhilosophyPlain());
 
         String[] chars = resultStr.split("");
         return Flux
@@ -98,6 +98,28 @@ public class TestController {
         return "已放弃";
     }
 
+    @GetMapping(value = "/getLastEvaluationResult", produces = "text/html;charset=UTF-8")
+    public Flux<String> getLastEvaluationResult(String memoryId) { // 浏览器传递的用户问题
+        EvaluationResult evaluationResult = gameFlowService.getLastEvaluationResult(memoryId);
+        String governanceEvaluation = "";
+        String philosophyEvaluation = "";
+        for (int i = 0; i < evaluationResult.getQuestionEvaluations().size(); i++) {
+            EvaluationResult.QuestionEvaluation questionEvaluation = evaluationResult.getQuestionEvaluations().get(i);
+            if (questionEvaluation.getType().equals("governance")) {
+                governanceEvaluation = questionEvaluation.getEvaluation();
+            } else if (questionEvaluation.getType().equals("philosophy")) {
+                philosophyEvaluation = questionEvaluation.getEvaluation();
+            }
+        }
+
+//        String resultStr = String.format("%s%s%s", evaluationResult.getpersonalityDiagnosis(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy());
+        String resultStr = String.format("governanceEvaluation（用户回答点评）:<br>%s<br>\nphilosophyEvaluation（用户回答点评）:<br>%s<br>\npersonalityDiagnosis（心性诊断）:<br>%s<br>governanceGuidance（哲人回答）:<br>%s<br>philosophyGuidance（哲人回答）:<br>%s<br>personalityDiagnosis（心性诊断白话）:<br>%s<br>governanceGuidancePlain（哲人回答白话）:<br>%s<br>philosophyGuidancePlain（哲人回答白话）:<br>%s", governanceEvaluation, philosophyEvaluation, evaluationResult.getPersonalityDiagnosis(), evaluationResult.getGuidance().getGovernance(), evaluationResult.getGuidance().getPhilosophy(), evaluationResult.getPersonalityDiagnosisPlain(), evaluationResult.getGuidance().getGovernancePlain(), evaluationResult.getGuidance().getPhilosophyPlain());
+
+        String[] chars = resultStr.split("");
+        return Flux
+                .fromArray(chars)
+                .delayElements(Duration.ofMillis(15));
+    }
 
     @GetMapping("/getRedisValByKey")
     public String getRedisString(String key) {
