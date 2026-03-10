@@ -1,6 +1,7 @@
 package com.cx.consultant.rag;
 
 //import com.cx.consultant.factory.RedisEmbeddingStoreFactory;
+
 import dev.langchain4j.community.store.embedding.redis.RedisEmbeddingStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
@@ -8,11 +9,10 @@ import dev.langchain4j.data.document.loader.ClassPathDocumentLoader;
 import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.data.document.parser.apache.pdfbox.ApachePdfBoxDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
@@ -24,7 +24,6 @@ import java.util.List;
 
 @Slf4j
 //@Component
-//@RequiredArgsConstructor
 public class RagIngestRunner implements ApplicationRunner {
 
     private static final int BATCH_SIZE = 10;
@@ -89,18 +88,46 @@ public class RagIngestRunner implements ApplicationRunner {
 //        log.info("RAG ingest finished, total segments: " + segments.size());
 
 
-//      //  3.构建一个EmbeddingStoreIngestor对象
-        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-                .embeddingStore(embeddingStore)
-                .embeddingModel(embeddingModel)
-                .documentSplitter(ds)
-                .build();
+////      //  3.构建一个EmbeddingStoreIngestor对象
+//        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
+//                .embeddingStore(embeddingStore)
+//                .embeddingModel(embeddingModel)
+//                .documentSplitter(ds)
+//                .build();
 
         // 加载文档
         List<Document> documents = loadDocuments();
 
-        ingestor.ingest(documents);
-        System.out.println("RAG ingest finished.");
+        // 3的工作-分割文本
+        List<TextSegment> allSegments = new ArrayList<>();
+        for (Document doc : documents) {
+            allSegments.addAll(ds.split(doc));
+        }
+        log.info("分割为 {} 个文本片段", allSegments.size());
+
+        // 3的工作-生成Embeddings（这里可以用较大批次，因为只是调用API）
+        var embeddings = embeddingModel.embedAll(allSegments).content();
+        log.info("生成 {} 个embeddings完成", embeddings.size());
+
+        // 3的工作-分别存储到Redis，避免一次性太多条导致超时
+        int STORE_BATCH_SIZE = 200;
+        for (int i = 0; i < allSegments.size(); i += STORE_BATCH_SIZE) {
+            int end = Math.min(i + STORE_BATCH_SIZE, allSegments.size());
+
+            List<TextSegment> segmentBatch = allSegments.subList(i, end);
+            List<Embedding> embeddingBatch = embeddings.subList(i, end);
+
+            // 3的工作-分批allAll，每次最多200条
+            embeddingStore.addAll(embeddingBatch, segmentBatch);
+
+            log.info("已存储 {}/{}", end, allSegments.size());
+        }
+
+        log.info("RAG ingest finished, total segments: {}", allSegments.size());
+
+
+//        ingestor.ingest(documents);
+//        System.out.println("RAG ingest finished.");
     }
 
     private List<Document> loadDocuments() {
@@ -124,4 +151,5 @@ public class RagIngestRunner implements ApplicationRunner {
 
         return documents;
     }
+
 }
